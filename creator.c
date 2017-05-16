@@ -13,7 +13,8 @@ int main(int argc, char const *argv[]) {
     const char* fifoPath = "/home/qngapparat/Documents/git/mutualExclusion/myFifo";
     const int MAX_FIFO_BUF = 1024;
     int fd;
-    char fifoBuffer[MAX_FIFO_BUF];
+    //NOTE possible SOP: insead of string
+    int fifoBuffer[MAX_FIFO_BUF];
 
     //shm variables
     int shmid;
