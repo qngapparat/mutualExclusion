@@ -26,17 +26,17 @@ int main(int argc, char const *argv[]) {
     }
 
     //attach and cast shared memory as a global variable
-    shmaddr = shmat(shmid, NULL, 0);
-    if(shmaddr == (char *)(-1)){
+    sharedInt = shmat(shmid, NULL, 0);
+    if(sharedInt == (int *)(-1)){
         perror("shmat");
         return EXIT_FAILURE;
     }
 
 
     //set integer
-    printf("peep 2: int is %s\n", shmaddr);
+    printf("peep 2: int is %d\n", *sharedInt);
 
-    if((shmdt(shmaddr)) == -1){
+    if((shmdt(sharedInt)) == -1){
         perror("shmdt");
         return EXIT_FAILURE;
     }

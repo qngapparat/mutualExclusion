@@ -26,7 +26,7 @@ int main(int argc, char const *argv[]) {
     //shm variables
     int shmid;
     key_t key;
-    const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem.txt";
+    const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem";
     int* sharedInt;
 
 /*
@@ -92,10 +92,17 @@ int main(int argc, char const *argv[]) {
     //converting int to string
     char sharedIntString[30];
     sprintf(sharedIntString, "%d", *sharedInt);
+    printf("converted int: %s\n", sharedIntString);
     write(fd, sharedIntString, strlen(sharedIntString)+1); //+1 including EOF
 
     close(fd);
 
+    if((shmdt(sharedInt)) == -1){
+        perror("shmdt");
+        return EXIT_FAILURE;
+    }
+
     printf("Spambot: parent: terminating\n");
     return EXIT_SUCCESS;
+
 }

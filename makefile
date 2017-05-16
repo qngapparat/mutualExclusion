@@ -1,11 +1,11 @@
 
 all:
 	gcc creator.c -o creator.out
-	gcc spambot.c -o spambot.out
+	gcc modifier.c -o modifier.out
 
 clean:
 	rm creator.out
-	rm spambot.out
+	rm modifier.out
 
 peeps:
 	gcc peep1.c -o peep1.out

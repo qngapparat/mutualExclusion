@@ -22,7 +22,7 @@ int main(int argc, char const *argv[]) {
     int shmid;
     key_t key;
     int* sharedInt;
-    const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem.txt";
+    const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem";
 
     //create file key
     key = 2002;
@@ -40,22 +40,35 @@ int main(int argc, char const *argv[]) {
         return EXIT_FAILURE;
     }
 
-
     //set integer
-    *(sharedInt) = 69420;
+    *(sharedInt) = 691111;
     printf("shared int: %d\n", *sharedInt);
+
+
 
     //detach form shared memory
     shmdt(sharedInt);
 
     printf("Creator: going to sleep before reading");
-    sleep(10);
+
+    //NOTE IO operation before a sleep statement seems to make the sleeps "stick together" to one large sleep block. Thus the arbitrary operation below
+    int temp = 3244;
+
+    for(int i = 0; i < 5; i++){
+        sleep(1);
+        printf("resuming in %d\n", (5-i));
+    }
 
     //listen on FIFO for integer
     fd = open(fifoPath, O_RDONLY);
     read(fd, fifoBuffer, MAX_FIFO_BUF);
-    memset(fifoBuffer, 0, MAX_FIFO_BUF);
     printf("Creator: Integer received thru fifo: %s\n", fifoBuffer);
+    memset(fifoBuffer, 0, MAX_FIFO_BUF);
+
+    if((shmdt(sharedInt)) == -1){
+        perror("shmdt");
+        return EXIT_FAILURE;
+    }
 
     printf("Creator: terminating\n");
     return EXIT_SUCCESS;
