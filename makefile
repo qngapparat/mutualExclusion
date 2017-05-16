@@ -10,3 +10,6 @@ clean:
 peeps:
 	gcc peep1.c -o peep1.out
 	gcc peep2.c -o peep2.out
+
+sem:
+	gcc sysVsemTest.c -o semtest.out
