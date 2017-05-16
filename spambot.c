@@ -45,7 +45,7 @@ int main(int argc, char const *argv[]) {
             }
 
             //NOTE possible problem source
-            sharedInt = shmat(shmid, (void *)0, 0);
+            sharedInt = shmat(shmid, NULL, 0);
             if(sharedInt == (int *)(-1)){
                 perror("child shmat");
                 return EXIT_FAILURE;
@@ -70,17 +70,16 @@ int main(int argc, char const *argv[]) {
 */
 
     //read shared variable
-    if((key = ftok(shmPath, 'R') == -1)){
-        perror("ftok");
-        return EXIT_FAILURE;
-    }
+
+    //create file key
+    key = 2002;
 
     if((shmid = shmget(key, 1024, 0666 | IPC_CREAT)) == -1){
         perror("child shmget");
         return EXIT_FAILURE;
     }
 
-    sharedInt = shmat(shmid, (void *)0, 0);
+    sharedInt = shmat(shmid, NULL, 0);
     if(sharedInt == (int *)(-1)){
         perror("child shmat");
         return EXIT_FAILURE;

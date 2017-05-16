@@ -25,10 +25,7 @@ int main(int argc, char const *argv[]) {
     const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem.txt";
 
     //create file key
-    if((key = ftok(shmPath, 'W')) == -1){
-        perror("ftok");
-        return EXIT_FAILURE;
-    }
+    key = 2002;
 
     //create shared memory
     if((shmid = shmget(key, 1024, 0666 | IPC_CREAT)) == -1){
@@ -37,7 +34,7 @@ int main(int argc, char const *argv[]) {
     }
 
     //attach and cast shared memory as a global variable
-    sharedInt = shmat(shmid, (void *)0, 0);
+    sharedInt = shmat(shmid, NULL, 0);
     if(sharedInt == (int *)(-1)){
         perror("shmat");
         return EXIT_FAILURE;
