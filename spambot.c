@@ -5,6 +5,10 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 
 int main(int argc, char const *argv[]) {
@@ -18,15 +22,16 @@ int main(int argc, char const *argv[]) {
     int fd;
     char fifoBuffer[MAX_FIFO_BUF];
 
+
     //shm variables
     int shmid;
     key_t key;
     const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem.txt";
+    int* sharedInt;
 
     for(int i = 0; i < 100; i++){
         //child code
-        if(!(fork() = pid)){
-
+        if(!(pid = fork())){
             //initialize shared integer
             if((key = ftok(shmPath, 'W') == -1)){
                 perror("child ftok");
@@ -49,6 +54,9 @@ int main(int argc, char const *argv[]) {
             for(int i = 0; i < 100; i++){
                 sharedInt++;
             }
+
+            //exit child threads
+            exit(EXIT_SUCCESS);
 
 
         }
@@ -77,15 +85,17 @@ int main(int argc, char const *argv[]) {
         return EXIT_FAILURE;
     }
 
-    printf("Spambot Parent: shared integer: %d", sharedInt);
-
+    printf("Spambot Parent: shared integer: %d\n", *sharedInt);
     //open fifo
     fd = open(fifoPath, O_WRONLY);
 
     //converting int to string
     char sharedIntString[30];
-    sprintf(sharedIntString, "%d", sharedInt);
+    sprintf(sharedIntString, "%d", *sharedInt);
     write(fd, sharedIntString, strlen(sharedIntString)+1); //+1 including EOF
 
+    close(fd);
+
+    printf("Spambot: parent: terminating\n");
     return EXIT_SUCCESS;
 }

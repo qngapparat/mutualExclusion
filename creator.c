@@ -2,9 +2,12 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <semaphore.h>
-#include<sys/ipc.h>
-#include<sys/shm.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 
 int main(int argc, char const *argv[]) {
@@ -13,8 +16,7 @@ int main(int argc, char const *argv[]) {
     const char* fifoPath = "/home/qngapparat/Documents/git/mutualExclusion/myFifo";
     const int MAX_FIFO_BUF = 1024;
     int fd;
-    //NOTE possible SOP: insead of string
-    int fifoBuffer[MAX_FIFO_BUF];
+    char fifoBuffer[MAX_FIFO_BUF];
 
     //shm variables
     int shmid;
@@ -43,8 +45,8 @@ int main(int argc, char const *argv[]) {
 
 
     //set integer
-    *(sharedInt) = 0;
-    printf("shared int: %d", *sharedInt);
+    *(sharedInt) = 69420;
+    printf("shared int: %d\n", *sharedInt);
 
     //detach form shared memory
     shmdt(sharedInt);
@@ -52,8 +54,9 @@ int main(int argc, char const *argv[]) {
     //listen on FIFO for integer
     fd = open(fifoPath, O_RDONLY);
     read(fd, fifoBuffer, MAX_FIFO_BUF);
-    printf("Creator: Integer received thru fifo: %d\n", fifoBuffer);
+    memset(fifoBuffer, 0, MAX_FIFO_BUF);
+    printf("Creator: Integer received thru fifo: %s\n", fifoBuffer);
 
-    printf("Creator: terminates\n");
+    printf("Creator: terminating\n");
     return EXIT_SUCCESS;
 }
