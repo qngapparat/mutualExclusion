@@ -15,13 +15,13 @@ int main(int argc, char const *argv[]) {
 
     //fork variables
     pid_t pid;
-/*
+
     //fifo variables
     const char* fifoPath = "/home/qngapparat/Documents/git/mutualExclusion/myFifo";
     const int MAX_FIFO_BUF = 1024;
     int fd;
     char fifoBuffer[MAX_FIFO_BUF];
-*/
+
 
     //shm variables
     int shmid;
@@ -31,7 +31,7 @@ int main(int argc, char const *argv[]) {
 
     key = 2004;
 
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < 100; i++){
         //child code
         if(!(pid = fork())){
             //initialize shared integer
@@ -48,17 +48,16 @@ int main(int argc, char const *argv[]) {
                 return EXIT_FAILURE;
             }
 
-            printf("loop: integer : %d\n", *sharedInt);
             //increase shared integer 100 times
-            for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 100; i++){
                 *sharedInt += 1;
             }
 
             //unlink
-            if((shmdt(sharedInt)) == -1){
+            /*if((shmdt(sharedInt)) == -1){
                 perror("shmdt");
                 return EXIT_FAILURE;
-            }
+            }*/
 
 
             //exit child threads
@@ -69,48 +68,51 @@ int main(int argc, char const *argv[]) {
     }
 
     //wait for all childs to terminate
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < 10; i++){
         wait(NULL);
     }
 
-/*
-    //read shared variable
 
-    //create file key
-    key = 2002;
-
+    //open shared segment for parent
     if((shmid = shmget(key, 1024, 0666 | IPC_CREAT)) == -1){
-        perror("child shmget");
+        perror("parent shmget");
         return EXIT_FAILURE;
     }
 
+    //NOTE possible problem source
     sharedInt = shmat(shmid, NULL, 0);
     if(sharedInt == (int *)(-1)){
-        perror("child shmat");
+        perror("parent shmat");
         return EXIT_FAILURE;
     }
 
-    printf("Spambot Parent: shared integer: %d\n", *sharedInt);
-*/
+    //read final state of shared variable
+    printf("Modifier: Final Variable: %d\n", *sharedInt);
+    printf("proceeding to sending value to creator\n");
 
-/*
+
     //open fifo
+    mkfifo(fifoPath, 0666);
     fd = open(fifoPath, O_WRONLY);
 
     //converting int to string
     char sharedIntString[30];
     sprintf(sharedIntString, "%d", *sharedInt);
-    printf("converted int: %s\n", sharedIntString);
+    printf("sent string: %s\n", sharedIntString);
+    //sending string
     write(fd, sharedIntString, strlen(sharedIntString)+1); //+1 including EOF
 
     close(fd);
-*/
+
+
+
+    /*
     if((shmdt(sharedInt)) == -1){
         perror("shmdt");
         return EXIT_FAILURE;
-    }
+    }*/
 
-    printf("Spambot: parent: terminating\n");
+    printf("Modifier: parent: terminating\n");
     return EXIT_SUCCESS;
 
 }
