@@ -10,7 +10,7 @@
 int main(int argc, char const *argv[]) {
 
     //fifo variables
-    const char* fifoPath = "/home/qngapparat/Documents/git/mutualExclusion/myFifo"
+    const char* fifoPath = "/home/qngapparat/Documents/git/mutualExclusion/myFifo";
     const int MAX_FIFO_BUF = 1024;
     int fd;
     char fifoBuffer[MAX_FIFO_BUF];
@@ -49,7 +49,10 @@ int main(int argc, char const *argv[]) {
     shmdt(sharedInt);
 
     //listen on FIFO for integer
-    
+    fd = open(fifoPath, O_RDONLY);
+    read(fd, fifoBuffer, MAX_FIFO_BUF);
+    printf("Creator: Integer received thru fifo: %d\n", fifoBuffer);
 
+    printf("Creator: terminates\n");
     return EXIT_SUCCESS;
 }
