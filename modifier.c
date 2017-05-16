@@ -15,13 +15,13 @@ int main(int argc, char const *argv[]) {
 
     //fork variables
     pid_t pid;
-
+/*
     //fifo variables
     const char* fifoPath = "/home/qngapparat/Documents/git/mutualExclusion/myFifo";
     const int MAX_FIFO_BUF = 1024;
     int fd;
     char fifoBuffer[MAX_FIFO_BUF];
-
+*/
 
     //shm variables
     int shmid;
@@ -29,15 +29,12 @@ int main(int argc, char const *argv[]) {
     const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem";
     int* sharedInt;
 
-/*
-    for(int i = 0; i < 100; i++){
+    key = 2004;
+
+    for(int i = 0; i < 10; i++){
         //child code
         if(!(pid = fork())){
             //initialize shared integer
-            if((key = ftok(shmPath, 'W') == -1)){
-                perror("child ftok");
-                return EXIT_FAILURE;
-            }
 
             if((shmid = shmget(key, 1024, 0666 | IPC_CREAT)) == -1){
                 perror("child shmget");
@@ -51,10 +48,18 @@ int main(int argc, char const *argv[]) {
                 return EXIT_FAILURE;
             }
 
+            printf("loop: integer : %d\n", *sharedInt);
             //increase shared integer 100 times
-            for(int i = 0; i < 100; i++){
-                sharedInt++;
+            for(int i = 0; i < 10; i++){
+                *sharedInt += 1;
             }
+
+            //unlink
+            if((shmdt(sharedInt)) == -1){
+                perror("shmdt");
+                return EXIT_FAILURE;
+            }
+
 
             //exit child threads
             exit(EXIT_SUCCESS);
@@ -67,8 +72,8 @@ int main(int argc, char const *argv[]) {
     for(int i = 0; i < 100; i++){
         wait(NULL);
     }
-*/
 
+/*
     //read shared variable
 
     //create file key
@@ -86,6 +91,9 @@ int main(int argc, char const *argv[]) {
     }
 
     printf("Spambot Parent: shared integer: %d\n", *sharedInt);
+*/
+
+/*
     //open fifo
     fd = open(fifoPath, O_WRONLY);
 
@@ -96,7 +104,7 @@ int main(int argc, char const *argv[]) {
     write(fd, sharedIntString, strlen(sharedIntString)+1); //+1 including EOF
 
     close(fd);
-
+*/
     if((shmdt(sharedInt)) == -1){
         perror("shmdt");
         return EXIT_FAILURE;
