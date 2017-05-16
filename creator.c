@@ -51,6 +51,9 @@ int main(int argc, char const *argv[]) {
     //detach form shared memory
     shmdt(sharedInt);
 
+    printf("Creator: going to sleep before reading");
+    sleep(10);
+
     //listen on FIFO for integer
     fd = open(fifoPath, O_RDONLY);
     read(fd, fifoBuffer, MAX_FIFO_BUF);

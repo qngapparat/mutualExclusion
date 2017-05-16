@@ -29,6 +29,7 @@ int main(int argc, char const *argv[]) {
     const char* shmPath = "/home/qngapparat/Documents/git/mutualExclusion/shmem.txt";
     int* sharedInt;
 
+/*
     for(int i = 0; i < 100; i++){
         //child code
         if(!(pid = fork())){
@@ -66,6 +67,7 @@ int main(int argc, char const *argv[]) {
     for(int i = 0; i < 100; i++){
         wait(NULL);
     }
+*/
 
     //read shared variable
     if((key = ftok(shmPath, 'R') == -1)){
@@ -78,7 +80,6 @@ int main(int argc, char const *argv[]) {
         return EXIT_FAILURE;
     }
 
-    //NOTE possible problem source
     sharedInt = shmat(shmid, (void *)0, 0);
     if(sharedInt == (int *)(-1)){
         perror("child shmat");
