@@ -106,11 +106,11 @@ int main(int argc, char const *argv[]) {
 
 
 
-    /*
+
     if((shmdt(sharedInt)) == -1){
         perror("shmdt");
         return EXIT_FAILURE;
-    }*/
+    }
 
     printf("Modifier: parent: terminating\n");
     return EXIT_SUCCESS;

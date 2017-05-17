@@ -65,11 +65,12 @@ int main(int argc, char const *argv[]) {
     memset(fifoBuffer, 0, MAX_FIFO_BUF);
 
     close(fd);
-    /*
+
+
     if((shmdt(sharedInt)) == -1){
         perror("shmdt");
         return EXIT_FAILURE;
-    }*/
+    }
 
     printf("Creator: terminating\n");
     return EXIT_SUCCESS;

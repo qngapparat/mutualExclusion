@@ -11,14 +11,10 @@ int main(int argc, char const *argv[]) {
     int semId;
     key_t key = 120;
 
+    //sembuf structs are an array of pointers to variables (?)
+    struct sembuf sem_lock = { semId, -1, SEM_UNDO };
 
-    struct sembuf sem_lock = {
-        semId, -1, SEM_UNDO
-    };
-
-    struct sembuf sem_unlock = {
-        semId, 1, SEM_UNDO
-    };
+    struct sembuf sem_unlock = { semId, 1, SEM_UNDO };
 
     //create semaphore
     if((semId = semget(key, 1, IPC_CREAT | 0660)) == -1){
